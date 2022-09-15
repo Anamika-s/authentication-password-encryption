@@ -1,5 +1,7 @@
 import userModel from "../models/User.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken"
+
 export class UserController
 {
   static Register = async (req,res)=>
@@ -54,7 +56,9 @@ else
      { const isMatch = await bcrypt.compare(password,user.password )
       if(user.email === email && isMatch)
       {
-      res.send({"status":"success", "message" :"user found"})
+        // Generate token
+        const token = jwt.sign({email:user.email}, process.env.SECRET_KEY, {expiresIn :'5d'})
+      res.send({"status":"success", "message" :"user found" , "token" : token})
       }
       else 
       {
